@@ -1,0 +1,76 @@
+:root {
+  --bg: #0f172a;
+  --card: #020617;
+  --text: #e5e7eb;
+  --accent: #22c55e;
+}
+
+.light {
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #020617;
+  --accent: #16a34a;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.app {
+  background: var(--card);
+  padding: 20px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
+
+h1 {
+  margin-bottom: 15px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+select, button {
+  padding: 8px;
+  border-radius: 10px;
+  border: none;
+  font-size: 0.9rem;
+}
+
+button {
+  background: var(--accent);
+  color: black;
+  font-weight: bold;
+}
+
+.question {
+  font-size: 1.6rem;
+  margin: 20px 0;
+}
+
+input {
+  width: 80%;
+  padding: 10px;
+  font-size: 1.2rem;
+  border-radius: 10px;
+  border: none;
+  text-align: center;
+}
+
+.stats {
+  margin-top: 12px;
+  font-size: 0.95rem;
+}
