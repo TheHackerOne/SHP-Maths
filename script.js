@@ -1,95 +1,135 @@
-let correctAnswer = null;
-let startTime = null;
+let level = 1;
+let xp = 0;
+let streak = 0;
+
+let currentAnswer = 0;
+let currentMethod = "";
+let timer;
+let timeLeft = 10;
+
+let weaknesses = {};
+
+function updateStats() {
+  document.getElementById("level").innerText = `Level: ${level}`;
+  document.getElementById("xp").innerText = `XP: ${xp}`;
+  document.getElementById("streak").innerText = `Streak: ${streak}`;
+  document.getElementById("timer").innerText = `⏱ ${timeLeft}s`;
+}
+
+// ---------------- TIMER ----------------
+
+function startTimer() {
+  timeLeft = 10;
+  clearInterval(timer);
+
+  timer = setInterval(() => {
+    timeLeft--;
+    updateStats();
+
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      streak = 0;
+      nextQuestion();
+    }
+  }, 1000);
+}
+
+// ---------------- QUESTION ENGINE ----------------
 
 function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function rangeForDifficulty(d) {
-  return [
-    [1, 12],
-    [5, 50],
-    [20, 200],
-    [50, 1000]
-  ][d - 1];
+function generateQuestion() {
+  let a, b, type;
+
+  // weighted based on weakness
+  let pool = ["add", "mul", "div", "percent", "mix"];
+
+  type = pool[rand(0, pool.length - 1)];
+
+  switch (type) {
+    case "add":
+      a = rand(20, 100);
+      b = rand(20, 100);
+      currentAnswer = a + b;
+      currentMethod = "Round + adjust";
+      return `${a} + ${b}`;
+
+    case "mul":
+      a = rand(20, 80);
+      b = rand(10, 30);
+      currentAnswer = a * b;
+      currentMethod = "Distributive";
+      return `${a} × ${b}`;
+
+    case "div":
+      b = rand(2, 20);
+      currentAnswer = rand(5, 20);
+      a = b * currentAnswer;
+      currentMethod = "Simplify / split";
+      return `${a} ÷ ${b}`;
+
+    case "percent":
+      a = rand(5, 50);
+      b = rand(20, 200);
+      currentAnswer = (a * b) / 100;
+      currentMethod = "Break %";
+      return `${a}% of ${b}`;
+
+    case "mix":
+      a = rand(10, 50);
+      b = rand(10, 30);
+      let c = rand(1, 10);
+      currentAnswer = a * b + c;
+      currentMethod = "Distribute + add";
+      return `${a} × ${b} + ${c}`;
+  }
 }
 
-function generateQuestion() {
-  let mode = document.getElementById("mode").value;
-  let diff = parseInt(document.getElementById("difficulty").value);
-  let [lo, hi] = rangeForDifficulty(diff);
+// ---------------- FLOW ----------------
 
-  if (mode === "mixed") {
-    mode = ["add", "sub", "mul", "div", "pct"][rand(0, 4)];
-  }
-
-  let a = rand(lo, hi);
-  let b = rand(lo, hi);
-  let text = "";
-
-  switch (mode) {
-    case "add":
-      correctAnswer = a + b;
-      text = `${a} + ${b}`;
-      break;
-    case "sub":
-      correctAnswer = a - b;
-      text = `${a} - ${b}`;
-      break;
-    case "mul":
-      correctAnswer = a * b;
-      text = `${a} × ${b}`;
-      break;
-    case "div":
-      correctAnswer = Math.round((a / b) * 100) / 100;
-      text = `${a} ÷ ${b}`;
-      break;
-    case "pct":
-      let p = rand(5, 25);
-      correctAnswer = Math.round((p / 100) * a);
-      text = `${p}% of ${a}`;
-      break;
-  }
-
-  return text;
+function startSession() {
+  nextQuestion();
 }
 
 function nextQuestion() {
-  document.getElementById("feedback").textContent = "";
+  let q = generateQuestion();
+  document.getElementById("question").innerText = q;
   document.getElementById("answer").value = "";
-
-  const q = generateQuestion();
-  document.getElementById("question").textContent = q;
-
-  startTime = performance.now();
+  document.getElementById("feedback").innerText = "";
+  startTimer();
 }
 
-document.getElementById("answer").addEventListener("keydown", e => {
-  if (e.key === "Enter") {
-    const userAns = parseFloat(e.target.value);
-    const time = ((performance.now() - startTime) / 1000).toFixed(2);
+function submitAnswer() {
+  clearInterval(timer);
 
-    if (Math.abs(userAns - correctAnswer) < 1) {
-      document.getElementById("feedback").textContent = `✅ Correct (${time}s)`;
-    } else {
-      document.getElementById("feedback").textContent =
-        `❌ Wrong. Correct: ${correctAnswer} (${time}s)`;
-    }
+  let user = parseFloat(document.getElementById("answer").value);
+
+  let correct = false;
+
+  if (Math.abs(user - currentAnswer) < 0.01) {
+    correct = true;
   }
-});
 
-/* THEME TOGGLE */
-function toggleTheme() {
-  document.body.classList.toggle("light");
-  localStorage.setItem(
-    "theme",
-    document.body.classList.contains("light") ? "light" : "dark"
-  );
+  if (correct) {
+    xp += 10;
+    streak++;
+    document.getElementById("feedback").innerText =
+      `✅ Correct | Method: ${currentMethod}`;
+  } else {
+    streak = 0;
+    document.getElementById("feedback").innerText =
+      `❌ Correct: ${currentAnswer} | Method: ${currentMethod}`;
+  }
+
+  if (xp > level * 100) {
+    level++;
+  }
+
+  updateStats();
+
+  setTimeout(nextQuestion, 1500);
 }
 
-(function () {
-  const saved = localStorage.getItem("theme");
-  if (saved === "light") {
-    document.body.classList.add("light");
-  }
-})();
+updateStats();
