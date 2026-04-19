@@ -8,11 +8,6 @@
 </head>
   
 <body>
-  <script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
-}
-</script>
 
 <div class="container">
   <h1>🧠 Mental Math Trainer</h1>
@@ -37,5 +32,14 @@ if ("serviceWorker" in navigator) {
 </div>
 
 <script src="script.js"></script>
+  <script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(reg => console.log("SW registered:", reg.scope))
+        .catch(err => console.log("SW failed:", err));
+    });
+  }
+</script>
 </body>
 </html>
