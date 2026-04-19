@@ -1,65 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Mental Math Trainer</title>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json" />
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Mental Math Trainer V2</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <div class="app">
-    <h1>🧠 Mental Math</h1>
 
-    <div class="controls">
-      <select id="mode">
-        <option value="add">Addition</option>
-        <option value="sub">Subtraction</option>
-        <option value="mul">Multiplication</option>
-        <option value="div">Division</option>
-        <option value="pct">Percentage</option>
-        <option value="mixed">Mixed</option>
-      </select>
+<div class="container">
+  <h1>🧠 Mental Math Trainer</h1>
 
-      <select id="difficulty">
-        <option value="1">Easy</option>
-        <option value="2">Medium</option>
-        <option value="3">Hard</option>
-        <option value="4">Extreme</option>
-      </select>
-
-      <button onclick="nextQuestion()">Start / Next</button>
-      <button onclick="toggleTheme()">🌗</button>
-    </div>
-
-    <div class="question" id="question">Press Start</div>
-
-    <input
-      type="number"
-      id="answer"
-      placeholder="Your answer"
-      autocomplete="off"
-    />
-
-    <div class="stats">
-      <div id="feedback"></div>
-      <div id="timer"></div>
-    </div>
+  <div id="stats-bar">
+    <span id="level"></span>
+    <span id="xp"></span>
+    <span id="streak"></span>
+    <span id="timer"></span>
   </div>
 
-  <script src="script.js"></script>
+  <h2 id="question"></h2>
 
-  <!-- Service worker -->
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js");
-    }
-  </script>
+  <input id="answer" type="number" placeholder="Answer" />
+  <button onclick="submitAnswer()">Submit</button>
+
+  <div id="feedback"></div>
+
+  <div class="controls">
+    <button onclick="startSession()">Start</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
