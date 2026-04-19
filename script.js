@@ -115,12 +115,17 @@ function submitAnswer() {
   if (correct) {
     xp += 10;
     streak++;
-    document.getElementById("feedback").innerText =
-      `✅ Correct | Method: ${currentMethod}`;
+  
+    const feedbackEl = document.getElementById("feedback");
+    feedbackEl.innerText = `✅ Correct | Method: ${currentMethod}`;
+    feedbackEl.className = "correct";
+  
   } else {
     streak = 0;
-    document.getElementById("feedback").innerText =
-      `❌ Correct: ${currentAnswer} | Method: ${currentMethod}`;
+  
+    const feedbackEl = document.getElementById("feedback");
+    feedbackEl.innerText = `❌ ${currentAnswer} | Method: ${currentMethod}`;
+    feedbackEl.className = "wrong";
   }
 
   if (xp > level * 100) {
